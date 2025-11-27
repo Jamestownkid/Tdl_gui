@@ -22,9 +22,17 @@ navItems.forEach(item => {
 const output = document.getElementById('output');
 const statusIndicator = document.getElementById('statusIndicator');
 
+let waiting2FA = false;
+
 function appendOutput(text) {
   output.textContent += text;
   output.scrollTop = output.scrollHeight;
+  
+  // Check if 2FA is being requested
+  if (text.includes('2FA Password') || text.includes('Enter 2FA') || text.includes('SESSION_PASSWORD_NEEDED')) {
+    waiting2FA = true;
+    show2FAPrompt();
+  }
 }
 
 function clearOutput() {
@@ -34,6 +42,15 @@ function clearOutput() {
 function setStatus(status, text) {
   statusIndicator.className = 'status-indicator ' + status;
   statusIndicator.querySelector('span').textContent = text;
+}
+
+function show2FAPrompt() {
+  const pwd = prompt('Enter your 2FA password:');
+  if (pwd) {
+    window.tdl.sendInput(pwd);
+    appendOutput('\n[2FA password submitted]\n');
+  }
+  waiting2FA = false;
 }
 
 // Listen for tdl output

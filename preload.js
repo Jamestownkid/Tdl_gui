@@ -2,6 +2,7 @@ const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('tdl', {
   run: (args) => ipcRenderer.invoke('run-tdl', args),
+  sendInput: (text) => ipcRenderer.invoke('send-input', text),
   stop: () => ipcRenderer.invoke('stop-tdl'),
   selectDirectory: () => ipcRenderer.invoke('select-directory'),
   selectFiles: () => ipcRenderer.invoke('select-files'),
