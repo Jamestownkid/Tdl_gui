@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com">
+  <title>TDL - Telegram Downloader</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+        </div>
+        <span class="logo-text">TDL</span>
+      </div>
+      
+      <div class="nav-section">
+        <div class="nav-label">ACCOUNT</div>
+        <button class="nav-item active" data-page="login">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+            <polyline points="10 17 15 12 10 7"/>
+            <line x1="15" y1="12" x2="3" y2="12"/>
+          </svg>
+          <span>Login</span>
+        </button>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label">ACTIONS</div>
+        <button class="nav-item" data-page="download">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          <span>Download</span>
+        </button>
+        <button class="nav-item" data-page="upload">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          <span>Upload</span>
+        </button>
+        <button class="nav-item" data-page="forward">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 17 20 12 15 7"/>
+            <path d="M4 18v-2a4 4 0 0 1 4-4h12"/>
+          </svg>
+          <span>Forward</span>
+        </button>
+        <button class="nav-item" data-page="export">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+          </svg>
+          <span>Export</span>
+        </button>
+      </div>
+
+      <div class="nav-section nav-bottom">
+        <div class="status-indicator" id="statusIndicator">
+          <div class="status-dot"></div>
+          <span>Ready</span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="content">
+      <!-- Login Page -->
+      <section class="page active" id="page-login">
+        <div class="page-header">
+          <h1>Login to Telegram</h1>
+          <p>Choose your preferred login method</p>
+        </div>
+        
+        <div class="cards-grid">
+          <div class="card" onclick="loginQR()">
+            <div class="card-icon purple">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7"/>
+                <rect x="14" y="3" width="7" height="7"/>
+                <rect x="14" y="14" width="7" height="7"/>
+                <rect x="3" y="14" width="7" height="7"/>
+              </svg>
+            </div>
+            <h3>QR Code</h3>
+            <p>Scan with Telegram app</p>
+            <code>tdl login -T qr</code>
+          </div>
+
+          <div class="card" onclick="loginCode()">
+            <div class="card-icon blue">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+              </svg>
+            </div>
+            <h3>Phone + Code</h3>
+            <p>Enter phone and verification code</p>
+            <code>tdl login -T code</code>
+          </div>
+
+          <div class="card" onclick="loginDesktop()">
+            <div class="card-icon green">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                <line x1="8" y1="21" x2="16" y2="21"/>
+                <line x1="12" y1="17" x2="12" y2="21"/>
+              </svg>
+            </div>
+            <h3>Desktop Client</h3>
+            <p>Import from Telegram Desktop</p>
+            <code>tdl login</code>
+          </div>
+        </div>
+
+        <div class="option-group">
+          <label>Namespace (optional)</label>
+          <input type="text" id="loginNamespace" placeholder="default">
+          <span class="hint">Use different namespaces for multiple accounts</span>
+        </div>
+      </section>
+
+      <!-- Download Page -->
+      <section class="page" id="page-download">
+        <div class="page-header">
+          <h1>Download from Telegram</h1>
+          <p>Download media from messages, channels, or chats</p>
+        </div>
+
+        <div class="form-section">
+          <div class="input-group">
+            <label>Message Links</label>
+            <textarea id="dlUrls" placeholder="https://t.me/channel/123&#10;https://t.me/c/123456/789&#10;One link per line..."></textarea>
+          </div>
+
+          <div class="row">
+            <div class="input-group flex-1">
+              <label>Download Directory</label>
+              <div class="input-with-btn">
+                <input type="text" id="dlDir" placeholder="Downloads folder">
+                <button class="btn-icon" onclick="selectDlDir()">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="input-group">
+              <label>JSON File (optional)</label>
+              <div class="input-with-btn">
+                <input type="text" id="dlJson" placeholder="Select exported JSON...">
+                <button class="btn-icon" onclick="selectDlJson()">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="options-row">
+            <label class="checkbox">
+              <input type="checkbox" id="dlTakeout">
+              <span class="checkmark"></span>
+              Takeout Session
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" id="dlSkipSame">
+              <span class="checkmark"></span>
+              Skip Existing
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" id="dlDesc">
+              <span class="checkmark"></span>
+              Descending Order
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" id="dlGroup">
+              <span class="checkmark"></span>
+              Detect Albums
+            </label>
+          </div>
+
+          <div class="row">
+            <div class="input-group small">
+              <label>Threads</label>
+              <input type="number" id="dlThreads" value="8" min="1" max="32">
+            </div>
+            <div class="input-group small">
+              <label>Concurrent</label>
+              <input type="number" id="dlLimit" value="4" min="1" max="16">
+            </div>
+            <div class="input-group">
+              <label>Include Extensions</label>
+              <input type="text" id="dlInclude" placeholder="jpg,png,mp4">
+            </div>
+            <div class="input-group">
+              <label>Exclude Extensions</label>
+              <input type="text" id="dlExclude" placeholder="mp3,wav">
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="btn primary" onclick="startDownload()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              Start Download
+            </button>
+            <button class="btn secondary" onclick="stopProcess()">Stop</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Upload Page -->
+      <section class="page" id="page-upload">
+        <div class="page-header">
+          <h1>Upload to Telegram</h1>
+          <p>Upload files to Saved Messages or specific chats</p>
+        </div>
+
+        <div class="form-section">
+          <div class="input-group">
+            <label>Files to Upload</label>
+            <div class="file-drop" id="uploadDrop" onclick="selectUploadFiles()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="17 8 12 3 7 8"/>
+                <line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+              <p>Click to select files</p>
+              <span id="uploadFilesList">No files selected</span>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="input-group flex-1">
+              <label>Destination Chat (optional)</label>
+              <input type="text" id="upChat" placeholder="Leave empty for Saved Messages">
+            </div>
+            <div class="input-group small">
+              <label>Topic ID</label>
+              <input type="number" id="upTopic" placeholder="0">
+            </div>
+          </div>
+
+          <div class="options-row">
+            <label class="checkbox">
+              <input type="checkbox" id="upPhoto">
+              <span class="checkmark"></span>
+              Upload as Photos
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" id="upDelete">
+              <span class="checkmark"></span>
+              Delete After Upload
+            </label>
+          </div>
+
+          <div class="row">
+            <div class="input-group small">
+              <label>Threads</label>
+              <input type="number" id="upThreads" value="8" min="1" max="32">
+            </div>
+            <div class="input-group small">
+              <label>Concurrent</label>
+              <input type="number" id="upLimit" value="4" min="1" max="16">
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="btn primary" onclick="startUpload()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="17 8 12 3 7 8"/>
+                <line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+              Start Upload
+            </button>
+            <button class="btn secondary" onclick="stopProcess()">Stop</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Forward Page -->
+      <section class="page" id="page-forward">
+        <div class="page-header">
+          <h1>Forward Messages</h1>
+          <p>Forward messages between chats with automatic fallback</p>
+        </div>
+
+        <div class="form-section">
+          <div class="input-group">
+            <label>Source Links</label>
+            <textarea id="fwdFrom" placeholder="https://t.me/channel/123&#10;One link per line..."></textarea>
+          </div>
+
+          <div class="row">
+            <div class="input-group flex-1">
+              <label>Source JSON (optional)</label>
+              <div class="input-with-btn">
+                <input type="text" id="fwdJson" placeholder="Select exported JSON...">
+                <button class="btn-icon" onclick="selectFwdJson()">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="input-group flex-1">
+              <label>Destination Chat (optional)</label>
+              <input type="text" id="fwdTo" placeholder="Leave empty for Saved Messages">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="input-group">
+              <label>Mode</label>
+              <select id="fwdMode">
+                <option value="direct">Direct (with fallback)</option>
+                <option value="clone">Clone (no forward header)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="options-row">
+            <label class="checkbox">
+              <input type="checkbox" id="fwdSilent">
+              <span class="checkmark"></span>
+              Silent (no notification)
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" id="fwdDry">
+              <span class="checkmark"></span>
+              Dry Run
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" id="fwdDesc">
+              <span class="checkmark"></span>
+              Descending Order
+            </label>
+          </div>
+
+          <div class="actions">
+            <button class="btn primary" onclick="startForward()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="15 17 20 12 15 7"/>
+                <path d="M4 18v-2a4 4 0 0 1 4-4h12"/>
+              </svg>
+              Start Forward
+            </button>
+            <button class="btn secondary" onclick="stopProcess()">Stop</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Export Page -->
+      <section class="page" id="page-export">
+        <div class="page-header">
+          <h1>Export Messages</h1>
+          <p>Export media messages from chats to JSON</p>
+        </div>
+
+        <div class="form-section">
+          <div class="row">
+            <div class="input-group flex-1">
+              <label>Chat</label>
+              <input type="text" id="expChat" placeholder="@username, chat ID, or invite link">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="input-group flex-1">
+              <label>Output File</label>
+              <div class="input-with-btn">
+                <input type="text" id="expOutput" placeholder="tdl-export.json">
+                <button class="btn-icon" onclick="selectExpDir()">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="input-group">
+              <label>Export Type</label>
+              <select id="expType">
+                <option value="time">Time Range</option>
+                <option value="id">ID Range</option>
+                <option value="last">Last N Messages</option>
+              </select>
+            </div>
+            <div class="input-group flex-1">
+              <label>Range Value</label>
+              <input type="text" id="expRange" placeholder="e.g., 100 or 1665700000,1665761624">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="input-group small">
+              <label>Topic ID</label>
+              <input type="number" id="expTopic" placeholder="0">
+            </div>
+          </div>
+
+          <div class="options-row">
+            <label class="checkbox">
+              <input type="checkbox" id="expContent">
+              <span class="checkmark"></span>
+              Include Content
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" id="expAll">
+              <span class="checkmark"></span>
+              All Messages (not just media)
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" id="expRaw">
+              <span class="checkmark"></span>
+              Raw Format
+            </label>
+          </div>
+
+          <div class="actions">
+            <button class="btn primary" onclick="startExport()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+              </svg>
+              Start Export
+            </button>
+            <button class="btn secondary" onclick="stopProcess()">Stop</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Output Terminal -->
+      <div class="terminal">
+        <div class="terminal-header">
+          <span>Output</span>
+          <button class="btn-icon small" onclick="clearOutput()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6"/>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+            </svg>
+          </button>
+        </div>
+        <div class="terminal-content" id="output"></div>
+      </div>
+    </main>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>
+
